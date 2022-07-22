@@ -28,15 +28,15 @@ public class DeliveryTest {
         var secondMeetingDate = DataGenerator.generateDate(daysToAddForSecondMeeting);
 
         $x("//*[@data-test-id=\"city\"]//input").setValue(validUser.getCity());
-        $$x("//*[@data-test-id=\"date\"]//input").findBy(Condition.visible).setValue(firstMeetingDate);
+        $x("//*[@placeholder=\"Дата встречи\"]").setValue(firstMeetingDate);
         $x("//*[@name=\"name\"]").setValue(validUser.getName());
         $x("//*[@name=\"phone\"]").setValue(validUser.getPhone());
         $x("//*[@data-test-id=\"agreement\"]").click();
         $x("//span[text()=\"Запланировать\"]/../parent::button").click();
-        $$x("//*[@class=\"notification__content\"]").find(Condition.visible).shouldHave(Condition.text("Встреча успешно запланирована на " + firstMeetingDate), Duration.ofSeconds(15));
-        $$x("//*[@data-test-id=\"date\"]//input").findBy(Condition.visible).setValue(secondMeetingDate);
+        $x("//div[contains(text(), \"Встреча успешно запланирована на\")]").shouldHave(Condition.text("Встреча успешно запланирована на " + firstMeetingDate), Duration.ofSeconds(15));
+        $x("//*[@placeholder=\"Дата встречи\"]").setValue(secondMeetingDate);
         $x("//span[text()=\"Запланировать\"]/../parent::button").click();
-        $x("//*[@class=\"notification__content\"]").shouldHave(Condition.text("У вас уже запланирована встреча на другую дату. Перепланировать?"), Duration.ofSeconds(15)).shouldBe(Condition.visible);
+        $$x("//*[@class=\"notification__content\"]").find(Condition.text("У вас уже запланирована встреча на другую дату. Перепланировать?")).shouldBe(Condition.visible, Duration.ofSeconds(15));
         $x("//*[text()=\"Перепланировать\"]/../parent::button").should(Condition.appear, Duration.ofSeconds(15)).click();
         $x("//*[@class=\"notification__content\"]").shouldHave(Condition.text("Встреча успешно запланирована на " + secondMeetingDate), Duration.ofSeconds(15)).shouldBe(Condition.visible);
     }
